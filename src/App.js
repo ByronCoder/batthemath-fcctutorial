@@ -11,7 +11,7 @@ class App extends React.Component {
     val2: 0,
     won: false,
     operator: '+',
-    mode: 'subtraction'
+    mode: 'addition'
   }
 
   componentDidMount() {
@@ -105,13 +105,15 @@ youWon = () => {
 
 
   render() {
+    const {mode, answer, numOfEnemies, val1, val2, won, operator} = this.state
+    const activeTheme = themes[mode]
     return (
-      <View style={styles.root}>
+      <View style={[styles.root, {backgroundColor: activeTheme.backgroundColor}]}>
    
-        <Text>Battle Math</Text>
+        <Text style={styles.title}>Battle Math</Text>
         <Picker
-            selectedValue={this.state.language}
-            style={{height: 50, width: 100}}
+            selectedValue={mode}
+            style={styles.picker}
             onValueChange={(itemValue, itemIndex) =>
               this.handleModePicker(itemValue)
             }>
@@ -122,26 +124,26 @@ youWon = () => {
        </Picker>
         <View style={styles.battlefield}>
           <View style={styles.container}>
-              <View style={styles.hero} />
+              <View style={[styles.hero, styles.character]} />
           </View>
         <View style={styles.container}>
-          {[...Array(this.state.numOfEnemies)].map(i => (
-            <View key={i} style={styles.enemy} />
+          {[...Array(numOfEnemies)].map(i => (
+            <View key={i} style={[styles.enemy, styles.character]} />
           ))} 
           </View>
         </View>
-          {this.state.won ?  <Text>Victory!</Text> : 
+          {won ?  <Text>Victory!</Text> : 
 
         <View style={styles.mathContainer}>
         <View style={styles.mathRow}>
-        <Text style={styles.mathText}>{this.state.val1} {this.state.operator} {this.state.val2} =</Text>
+        <Text style={styles.mathText}>{val1} {operator} {val2} =</Text>
         <TextInput
           style={styles.input}
           onChangeText={(answer) => this.setState({ answer })}
-          value={this.state.answer} />
+          value={answer} />
           </View>
         <Button
-          onPress={() => this.checkAnswer(this.state.mode)}
+          onPress={() => this.checkAnswer(mode)}
           title="Submit"
           color="#841584"
           accessibilityLabel="Learn more about this purple button"
@@ -150,6 +152,21 @@ youWon = () => {
         }
       </View>
     )
+  }
+}
+
+const themes = {
+  addition: {
+    backgroundColor: 'green'
+  },
+  subtraction: {
+    backgroundColor: 'pink'
+  },
+  multiplication: {
+    backgroundColor: 'yellow'
+  },
+  division: {
+    backgroundColor: 'orange'
   }
 }
 
@@ -162,7 +179,16 @@ const styles = StyleSheet.create({
     top: 0, 
     bottom: 0, 
     left: 0,
-    right: 0 
+    right: 0,
+    paddingVertical: 16
+  },
+  title: {
+    fontSize: 32,
+    fontFamily: '"Comic Sans MS", cursive, sans-serif'
+  },
+  picker: {
+    height: 60, 
+    width: 150
   },
   battlefield: {
     flex: 1,
@@ -176,14 +202,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly'
 
   },
+  character: {
+    width: 80,
+    height: 80
+  },
   hero: {
-    width: 40,
-    height: 40,
+    
     backgroundColor: 'blue' 
   },
-  enemy: {
-    width: 40,
-    height: 40,
+  enemy: { 
     backgroundColor: 'red' 
   },
   mathContainer: {
@@ -196,7 +223,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8
   },
   mathText:  {
-    fontSize: 26,
+    fontSize: 28,
     paddingRight: 8
   },
   input : {
@@ -206,6 +233,9 @@ const styles = StyleSheet.create({
     borderWidth: 1 
   }
 });
+
+
+
 
 
 export default App;
